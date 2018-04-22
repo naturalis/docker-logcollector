@@ -109,16 +109,9 @@ services:
 #      - default
 
 networks:
-  pgnet:
-    external: true
   web:
     external: true
 
 volumes:
   elasticsearch_data:
   grafana_data:
-  pgadmin_data:
-  schemaspy_data:
-  logs  :
-  pgdata:
-  pgadmin:
