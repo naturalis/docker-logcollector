@@ -1,0 +1,17 @@
+filebeat.config.modules:
+  enabled: true
+  path: ${path.config}/modules.d/*.yml
+
+output.elasticsearch:
+  hosts:
+    - elasticsearch:9200
+  index: filebeat
+  pipeline: test_pipe
+
+setup.template:
+  name: "testbeat"
+  pattern: "testbeat-%{[beat.version]}-*"
+  overwrite: false
+  fields: "/template/template.yml"
+    #setup.kibana:
+    #  host: "kibana:5601"

@@ -1,0 +1,125 @@
+version: '3'
+
+services:
+  traefik:
+    image: traefik:1.4.6
+#   restart: always
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - web
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${TRAEFIK_TOML_FILE:-./traefik/traefik.toml}:/traefik.toml
+      - ${ACME_JSON:-./traefik/acme.json}:/acme.json
+    container_name: traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=8080"
+      - ${TRAEFIK_URL_CONFIG:-traefik.frontend.rule=Host:traefik.docker.localhost}
+#     - ${TRAEFIK_URL_CONFIG:-traefik.frontend.rule=Host:traefik.naturalis.nl}
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.1.0
+    volumes:
+    - elasticsearch_data:/usr/share/elasticsearch/data
+    environment:
+      # so support single node development
+      discovery.type: single-node
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - web
+      - default
+    labels:
+      - "traefik.backend=naturalis-elasticsearch"
+      - "traefik.docker.network=web"
+      - "traefik.enable=true"
+      - "traefik.port=9200"
+      - ${ELASTICSEARCH_URL_CONFIG:-traefik.frontend.rule=Host:elasticsearch.docker.localhost}
+#     - ${ELASTICSEARCH_URL_CONFIG:-traefik.frontend.rule=Host:elasticsearch.naturalis.nl}
+      - ${ELASTICSEARCH_AUTH:-traefik.frontend.auth.basic=kibana:$apr1$.lcgllId$9sUY3fPk/gDuh3NQ55024/}
+
+  logstash:
+    build: ./logstash
+    volumes:
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - logs:/mnt/data:rw
+    ports:
+      - "5000"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - default
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana-oss:6.1.0
+    expose:
+      - "5601"
+    ports: # remove when using traefik only
+      - "5601:5601"
+    networks:
+      - web
+      - default
+    labels:
+      - "traefik.backend=naturalis-kibana"
+      - "traefik.docker.network=web"
+      - "traefik.enable=true"
+      - "traefik.port=5601"
+      - ${KIBANA_URL_CONFIG:-traefik.frontend.rule=Host:kibana.docker.localhost}
+#     - ${KIBANA_URL_CONFIG:-traefik.frontend.rule=Host:kibana.naturalis.nl}
+      - ${KIBANA_AUTH:-traefik.frontend.auth.basic=kibana:$apr1$.lcgllId$9sUY3fPk/gDuh3NQ55024/}
+
+  grafana:
+    #image: grafana/grafana
+    image: grafana/grafana:master
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASS:-secret}
+    expose:
+      - "3000"
+    networks:
+      - web
+      - default
+    labels:
+      - "traefik.backend=naturalis-grafana"
+      - "traefik.docker.network=web"
+      - "traefik.enable=true"
+      - "traefik.port=3000"
+      - ${GRAFANA_URL_CONFIG:-traefik.frontend.rule=Host:grafana.docker.localhost}
+#     - ${GRAFANA_URL_CONFIG:-traefik.frontend.rule=Host:grafana.naturalis.nl}
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:6.2.3
+    volumes:
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./filebeat/modules.d:/usr/share/filebeat/modules.d
+      - ./filebeat/module:/usr/share/filebeat/module
+      - ./filebeat/template:/template
+      - /tmp/syslog:/log
+    command: -e -strict.perms=false
+    networks:
+      - default
+
+networks:
+  pgnet:
+    external: true
+  web:
+    external: true
+
+volumes:
+  elasticsearch_data:
+  grafana_data:
+  pgadmin_data:
+  schemaspy_data:
+  logs  :
+  pgdata:
+  pgadmin:

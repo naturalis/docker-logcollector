@@ -1,0 +1,9 @@
+module_version: "0.1"
+
+var:
+  - name: paths
+    default:
+      - /log/messages
+
+ingest_pipeline: ingest/pipeline.json
+prospector: config/syslog.yml
