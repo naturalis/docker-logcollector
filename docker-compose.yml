@@ -20,7 +20,7 @@ services:
 #     - ${TRAEFIK_URL_CONFIG:-traefik.frontend.rule=Host:traefik.naturalis.nl}
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.1.0
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.4
     volumes:
     - elasticsearch_data:/usr/share/elasticsearch/data
     environment:
@@ -59,7 +59,7 @@ services:
       - elasticsearch
 
   kibana:
-    image: docker.elastic.co/kibana/kibana-oss:6.1.0
+    image: docker.elastic.co/kibana/kibana-oss:6.2.4
     expose:
       - "5601"
     ports: # remove when using traefik only
@@ -97,7 +97,7 @@ services:
 #     - ${GRAFANA_URL_CONFIG:-traefik.frontend.rule=Host:grafana.naturalis.nl}
 
 #  filebeat:
-#    image: docker.elastic.co/beats/filebeat:6.2.3
+#    image: docker.elastic.co/beats/filebeat:6.2.4
 #    volumes:
 #      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
 #      - ./filebeat/modules.d:/usr/share/filebeat/modules.d
