@@ -26,8 +26,8 @@ DHCPDISCOVER        %{WORD:dhcp_action} from %{COMMONMAC:dhcp_client_mac}%{SPACE
 DHCPOFFER           %{WORD:dhcp_action} on %{IPV4:dhcp_client_ip} to %{COMMONMAC:dhcp_client_mac}%{SPACE}((%{GREEDYDATA:dhcp_client_hostname}))? via (?<dhcp_client_vlan>[0-9a-z_]*)
 DHCPREQUEST         %{WORD:dhcp_action} for %{IPV4:dhcp_client_ip}%{SPACE}((%{IPV4:dhcp_ip_unknown}))? from %{COMMONMAC:dhcp_client_mac}%{SPACE}((%{GREEDYDATA:dhcp_client_hostname}))? via (?<dhcp_client_vlan>[0-9a-z_]*)(: %{GREEDYDATA:dhcp_request_message})?
 DHCPACK             (%{DHCPACK_TO}|%{DHCPACK_ON})
-DHCPACK_TO          %{WORD:dhcp_action} to %{IPV4:dhcp_client_ip} \\(%{COMMONMAC:dhcp_client_mac}\\) via (?<dhcp_client_vlan>[0-9a-z_]*)
-DHCPACK_ON          %{WORD:dhcp_action} on %{COMMONMAC:dhcp_client_mac}%{SPACE}((%{GREEDYDATA:dhcp_client_hostname}))? via (?<dhcp_client_vlan>[0-9a-z_]*)
+DHCPACK_TO          (?<dhcp_action>DHCPACK) to %{IPV4:dhcp_client_ip} \(%{COMMONMAC:dhcp_client_mac}\) via (?<dhcp_client_vlan>[0-9a-z_]*)
+DHCPACK_ON          (?<dhcp_action>DHCPACK) on %{IPV4:dhcp_client_ip} to %{COMMONMAC:dhcp_client_mac} ((%{GREEDYDATA:dhcp_client_hostname}))? via (?<dhcp_client_vlan>[0-9a-z_]*)
 DHCPINFORM          %{WORD:dhcp_action} from %{IPV4:dhcp_client_ip} via (?<dhcp_client_vlan>[0-9a-z_]*)
 DHCPRELEASE         %{WORD:dhcp_action} of %{IPV4:dhcp_client_ip} from %{COMMONMAC:dhcp_client_mac}%{SPACE}((%{GREEDYDATA:dhcp_client_hostname}))? via (?<dhcp_client_vlan>[0-9a-z_]*) %{GREEDYDATA:dhcp_release_message}
 DHCPDECLINE         %{WORD:dhcp_action} of %{IPV4:dhcp_client_ip} from %{COMMONMAC:dhcp_client_mac}%{SPACE}((%{GREEDYDATA:dhcp_client_hostname}))? via (?<dhcp_client_vlan>[0-9a-z_]*) %{GREEDYDATA:dhcp_decline_message}
