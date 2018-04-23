@@ -6,7 +6,7 @@ IPv4_SPECIFIC_DATA  (%{BASE16NUM:tos}),(%{INT:somenumber})?,(%{INT:ttl}),(%{INT:
 IPv6_SPECIFIC_DATA  (%{BASE16NUM:class}),(%{DATA:flow_label}),(%{INT:hop_limit}),(%{WORD:proto}),(%{INT:proto_id})
 IP_DATA             (%{INT:length}),(%{IP:src_ip}),(%{IP:dest_ip})
 PROTOCOL_DATA       (%{TCP_DATA}|%{UDP_DATA}|%{ICMP_DATA}|%{PFSYNC_DATA})
-TCP_DATA            (%{INT:src_port}),(%{INT:dest_port}),(%{INT:data_length}),(%{WORD:tcp_flags}),(%{INT:sequence_number}),,(%{INT:tcp_window}),,(%{GREEDYDATA:tcp_options})
+TCP_DATA            (%{INT:src_port}),(%{INT:dest_port}),(%{INT:data_length}),(%{WORD:tcp_flags}),(%{INT:sequence_number}),(%{INT:some_number})?,(%{INT:tcp_window}),,(%{GREEDYDATA:tcp_options})?
 UDP_DATA            (%{INT:src_port}),(%{INT:dest_port}),(%{INT:data_length})
 ICMP_DATA           (%{ICMP_TYPE}%{ICMP_RESPONSE})
 PFSYNC_DATA         (%{WORD:carp_action}),(%{INT:carp_data_length}),(%{INT:carp_vhid_group}),(%{INT:carp_a}),(%{INT:carp_advertising_frequency_skew}),(%{INT:carp_advertising_frequency_base})
