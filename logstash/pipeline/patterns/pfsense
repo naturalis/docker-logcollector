@@ -21,7 +21,7 @@ ICMP_TSTAMP         (%{INT:icmp_tstamp_id}),(%{INT:icmp_tstamp_sequence})
 ICMP_TSTAMP_REPLY   (%{INT:icmp_tstamp_reply_id}),(%{INT:icmp_tstamp_reply_sequence}),(%{INT:icmp_tstamp_reply_otime}),(%{INT:icmp_tstamp_reply_rtime}),(%{INT:icmp_tstamp_reply_ttime})
 
 # DHCP
-DHCPD               (%{DHCPDISCOVER}|%{DHCPOFFER}|%{DHCPREQUEST}|%{DHCPACK}|%{DHCPINFORM}|%{DHCPRELEASE}|%{DHCPDECLINE}|%{DHCPMISC)
+DHCPD               (%{DHCPDISCOVER}|%{DHCPOFFER}|%{DHCPREQUEST}|%{DHCPACK}|%{DHCPINFORM}|%{DHCPRELEASE}|%{DHCPDECLINE}|%{DHCPMISC})
 DHCPDISCOVER        (?<dhcp_action>DHCPDISCOVER) from %{COMMONMAC:dhcp_client_mac}%{SPACE}((%{GREEDYDATA:dhcp_client_hostname}))? via (?<dhcp_client_vlan>[0-9a-z_]*)(: %{GREEDYDATA:dhcp_load_balance})?
 DHCPOFFER           (?<dhcp_action>DHCPOFFER) on %{IPV4:dhcp_client_ip} to %{COMMONMAC:dhcp_client_mac}%{SPACE}((%{GREEDYDATA:dhcp_client_hostname}))? via (?<dhcp_client_vlan>[0-9a-z_]*)
 DHCPREQUEST         (?<dhcp_action>DHCPREQUEST) for %{IPV4:dhcp_client_ip}%{SPACE}(\(%{IPV4:dhcp_server_ip}\))? from %{COMMONMAC:dhcp_client_mac}%{SPACE}((%{GREEDYDATA:dhcp_client_hostname}))? via (?<dhcp_client_vlan>[0-9a-z_]*)(: %{GREEDYDATA:dhcp_request_message})?
