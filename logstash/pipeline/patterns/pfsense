@@ -9,7 +9,7 @@ PROTOCOL_DATA       (%{TCP_DATA}|%{UDP_DATA}|%{ICMP_DATA}|%{PFSYNC_DATA})
 TCP_DATA            (%{INT:src_port}),(%{INT:dest_port}),(%{INT:data_length}),(%{WORD:tcp_flags}),(%{INT:sequence_number}),(%{INT:some_number})?,(%{INT:tcp_window}),,(%{GREEDYDATA:tcp_options})?
 UDP_DATA            (%{INT:src_port}),(%{INT:dest_port}),(%{INT:data_length})
 ICMP_DATA           (%{ICMP_TYPE}%{ICMP_RESPONSE})
-PFSYNC_DATA         (%{WORD:carp_action}),(%{INT:carp_data_length}),(%{INT:carp_vhid_group}),(%{INT:carp_a}),(%{INT:carp_advertising_frequency_skew}),(%{INT:carp_advertising_frequency_base})
+PFSYNC_DATA         (%{WORD:carp_action}),(%{INT:carp_data_length}),(%{INT:carp_vhid_group}),(%{INT:carp_somenumber}),(%{INT:carp_advertising_frequency_skew}),(%{INT:carp_advertising_frequency_base})
 ICMP_TYPE           (?<icmp_type>(request|reply|unreachproto|unreachport|unreach|timeexceed|paramprob|redirect|maskreply|needfrag|tstamp|tstampreply))
 ICMP_RESPONSE       (%{ICMP_ECHO_REQ_REPLY}|%{ICMP_UNREACHPORT}| %{ICMP_UNREACHPROTO}|%{ICMP_UNREACHABLE}|%{ICMP_NEED_FLAG}|%{ICMP_TSTAMP}|%{ICMP_TSTAMP_REPLY})
 ICMP_ECHO_REQ_REPLY (%{INT:icmp_echo_id}),(%{INT:icmp_echo_sequence})
