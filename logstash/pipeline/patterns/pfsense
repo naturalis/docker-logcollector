@@ -1,6 +1,6 @@
 # Filterlog
 FILTERLOG           %{LOG_DATA},%{IP_SPECIFIC_DATA},%{IP_DATA},%{PROTOCOL_DATA}
-LOG_DATA            (%{INT:rule}),(%{INT:sub_rule}),,(%{INT:tracker}),(%{WORD:iface}),(%{WORD:reason}),(%{WORD:action}),(%{WORD:direction}),(%{INT:ip_ver})
+LOG_DATA            (%{INT:rule}),(%{INT:sub_rule}),,(%{INT:tracker}),(%{WORD:iface}),(%{DATA:reason}),(%{WORD:action}),(%{WORD:direction}),(%{INT:ip_ver})
 IP_SPECIFIC_DATA    (%{IPv4_SPECIFIC_DATA}|%{IPv6_SPECIFIC_DATA})
 IPv4_SPECIFIC_DATA  (%{BASE16NUM:tos}),(%{INT:somenumber})?,(%{INT:ttl}),(%{INT:id}),(%{INT:offset}),(%{WORD:flags}),(%{INT:proto_id}),(%{WORD:proto})
 IPv6_SPECIFIC_DATA  (%{BASE16NUM:class}),(%{DATA:flow_label}),(%{INT:hop_limit}),(%{WORD:proto}),(%{INT:proto_id})
@@ -9,7 +9,7 @@ PROTOCOL_DATA       (%{TCP_DATA}|%{UDP_DATA}|%{PFSYNC_DATA}|%{IGMP_DATA}|%{ICMP_
 TCP_DATA            (%{INT:src_port}),(%{INT:dest_port}),(%{INT:data_length}),(%{WORD:tcp_flags}),(%{INT:sequence_number}),(%{INT:some_number})?,(%{INT:tcp_window}),,(%{GREEDYDATA:tcp_options})?
 UDP_DATA            (%{INT:src_port}),(%{INT:dest_port}),(%{INT:data_length})
 PFSYNC_DATA         (%{WORD:carp_action}),(%{INT:carp_data_length}),(%{INT:carp_vhid_group}),(%{INT:carp_somenumber}),(%{INT:carp_advertising_frequency_skew}),(%{INT:carp_advertising_frequency_base})
-IGMP_DATA           (%{INT:igmp_somenumber}),(%{IPV4:igmp_src_ip}),(%{IPV4:igmp_dest_ip}),datalength=(%{INT:igmp_datalength})
+IGMP_DATA           datalength=(%{INT:igmp_datalength})
 ICMP_DATA           (%{ICMP_TYPE}%{ICMP_RESPONSE})
 ICMP_TYPE           (?<icmp_type>(request|reply|unreachproto|unreachport|unreach|timeexceed|paramprob|redirect|maskreply|needfrag|tstamp|tstampreply))
 ICMP_RESPONSE       (%{ICMP_ECHO_REQ_REPLY}|%{ICMP_UNREACHPORT}| %{ICMP_UNREACHPROTO}|%{ICMP_UNREACHABLE}|%{ICMP_NEED_FLAG}|%{ICMP_TSTAMP}|%{ICMP_TSTAMP_REPLY})
