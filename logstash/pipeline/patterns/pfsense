@@ -2,7 +2,7 @@
 FILTERLOG           %{LOG_DATA},%{IP_SPECIFIC_DATA},%{IP_DATA},(%{PROTOCOL_DATA})?
 LOG_DATA            (%{INT:rule}),(%{INT:sub_rule})?,,(%{INT:tracker}),(%{WORD:iface}),(%{DATA:reason}),(%{WORD:action}),(%{WORD:direction}),(%{INT:ip_ver})
 IP_SPECIFIC_DATA    (%{IPv4_SPECIFIC_DATA}|%{IPv6_SPECIFIC_DATA})
-IPv4_SPECIFIC_DATA  (%{BASE16NUM:tos}),(%{INT:somenumber})?,(%{INT:ttl}),(%{INT:id}),(%{INT:offset}),(%{WORD:flags}),(%{INT:proto_id}),(%{WORD:proto})
+IPv4_SPECIFIC_DATA  (%{BASE16NUM:tos}),(%{DATA:somenumber})?,(%{INT:ttl}),(%{INT:id}),(%{INT:offset}),(%{WORD:flags}),(%{INT:proto_id}),(%{WORD:proto})
 IPv6_SPECIFIC_DATA  (%{DATA:class}),(%{DATA:flow_label}),(%{INT:hop_limit}),(%{WORD:proto}),(%{INT:proto_id})
 IP_DATA             (%{INT:length}),(%{IP:src_ip}),(%{IP:dest_ip})
 PROTOCOL_DATA       (%{TCP_DATA}|%{UDP_DATA}|%{PFSYNC_DATA}|%{ROUTING_DATA}|%{ICMP_DATA})
