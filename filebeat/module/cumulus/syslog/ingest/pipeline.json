@@ -1,18 +1,13 @@
 {
-"description": "Pipeline for parsing pfsense syslog messages.",
+  "description": "Pipeline for parsing Cumulus syslog messages.",
   "processors": [
     {
       "grok": {
         "field": "message",
         "patterns": [
-          "%{GREEDYDATA:syslog_message}"
+          "%{TIMESTAMP_ISO8601:syslog_timestamp} %{GREEDYDATA:syslog_message}"
         ],
         "ignore_missing": true
-      }
-    },
-    {
-      "remove": {
-        "field": "message"
       }
     },
     {
@@ -20,24 +15,30 @@
         "field": "syslog_timestamp",
         "target_field": "@timestamp",
         "formats": [
-          "MMM  d HH:mm:ss",
-          "MMM dd HH:mm:ss"
+          "ISO8601"
         ],
         "ignore_failure": true
       }
     },
     {
       "json": {
-        "field" : "syslog_message",
-        "target_field" : "syslog_message_aap",
-        "ignore_failure" : true
+        "field": "syslog_message",
+        "target_field": "nclu",
+        "ignore_failure": true
+      }
+    },
+    {
+      "remove": {
+        "field": ["message","syslog_message"]
+      }
+    }    
+  ],
+  "on_failure": [
+    {
+      "set": {
+        "field": "error.message",
+        "value": "{{ _ingest.on_failure_message }}"
       }
     }
-  ],
-  "on_failure" : [{
-    "set" : {
-      "field" : "error.message",
-      "value" : "{{ _ingest.on_failure_message }}"
-    }
-  }]
+  ]
 }
