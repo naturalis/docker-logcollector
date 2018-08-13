@@ -48,7 +48,7 @@ services:
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./logstash/${LOGSTASH_PATH_CONFIG}:/usr/share/logstash/pipeline
-      - /tmp/syslog:/mnt/data:rw
+      - /tmp/syslog:/mnt/logs:rw
     ports:
       - "5000"
     environment:
