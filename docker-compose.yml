@@ -85,6 +85,8 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASS:-secret}
     expose:
       - "3000"
+    ports: # remove when using traefik only
+      - "3000:3000"
     networks:
       - web
       - default
