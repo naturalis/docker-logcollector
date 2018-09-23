@@ -116,7 +116,7 @@ services:
       - 514:514/udp
       - 514:514
     volumes:
-      - "./syslog:/var/log/syslog"
+      - "/tmp/syslog:/var/log/syslog"
 
 networks:
   web:
