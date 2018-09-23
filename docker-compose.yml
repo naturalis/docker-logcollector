@@ -110,6 +110,14 @@ services:
     networks:
       - default
 
+  rsyslog:
+    image: robbert229/rsyslog
+    ports:
+      - 514:514/udp
+      - 514:514
+    volumes:
+      - "./syslog:/var/log/syslog"
+
 networks:
   web:
     external: true
