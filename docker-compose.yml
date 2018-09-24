@@ -116,7 +116,7 @@ services:
       - 514:514/udp
       - 514:514
     volumes:
-      - "/tmp/syslog:/var/log/syslog"
+      - rsyslog_data:/var/log
 
 networks:
   web:
@@ -125,3 +125,4 @@ networks:
 volumes:
   elasticsearch_data:
   grafana_data:
+  rsyslog_data:
