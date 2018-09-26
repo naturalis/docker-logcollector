@@ -6,4 +6,5 @@ filebeat - logstash - elasticsearch - kibana - grafana - traefik
 
 
 ## Cumulus
-copy cumulus.env .env
+
+cp cumulus.env .env
