@@ -111,11 +111,12 @@ services:
       - default
 
   rsyslog:
-    image: robbert229/rsyslog
+    image: ./rsyslog
     ports:
       - 514:514/udp
       - 514:514
     volumes:
+      - ./rsyslog/rsyslog.conf:/etc/rsyslogd.conf
       - rsyslog_data:/var/log
 
 networks:
