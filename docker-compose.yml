@@ -111,7 +111,7 @@ services:
       - default
 
   rsyslog:
-    buid: ./rsyslog
+    build: ./rsyslog
     ports:
       - 514:514/udp
       - 514:514
