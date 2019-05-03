@@ -112,6 +112,7 @@ services:
 
   rsyslog:
     build: ./rsyslog
+    network_mode: "host"
     ports:
       - 514:514/udp
       - 514:514
