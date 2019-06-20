@@ -31,10 +31,10 @@ services:
       memlock:
         soft: -1
         hard: -1
-    expose:
-      - 9200
-    ports:
-      - "9200:9200"
+#    expose:
+#      - 9200
+#    ports:
+#      - "9200:9200"
     networks:
       - web
       - default
