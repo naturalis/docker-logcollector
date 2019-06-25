@@ -18,6 +18,10 @@ services:
       - "traefik.port=8080"
       - ${TRAEFIK_URL_CONFIG:-traefik.frontend.rule=Host:traefik.docker.localhost}
 #     - ${TRAEFIK_URL_CONFIG:-traefik.frontend.rule=Host:traefik.naturalis.nl}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: '10m'
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.3.2
@@ -46,6 +50,10 @@ services:
       - ${ELASTICSEARCH_URL_CONFIG:-traefik.frontend.rule=Host:elasticsearch.docker.localhost}
 #     - ${ELASTICSEARCH_URL_CONFIG:-traefik.frontend.rule=Host:elasticsearch.naturalis.nl}
       - ${ELASTICSEARCH_AUTH:-traefik.frontend.auth.basic=kibana:$apr1$.lcgllId$9sUY3fPk/gDuh3NQ55024/}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: '10m'
 
   logstash:
     build: ./logstash
@@ -61,6 +69,10 @@ services:
       - default
     depends_on:
       - elasticsearch
+    logging:
+      driver: "json-file"
+      options:
+        max-size: '10m'
 
   kibana:
     image: docker.elastic.co/kibana/kibana-oss:6.3.2
@@ -79,6 +91,10 @@ services:
       - ${KIBANA_URL_CONFIG:-traefik.frontend.rule=Host:kibana.docker.localhost}
 #     - ${KIBANA_URL_CONFIG:-traefik.frontend.rule=Host:kibana.naturalis.nl}
       - ${KIBANA_AUTH:-traefik.frontend.auth.basic=kibana:$apr1$.lcgllId$9sUY3fPk/gDuh3NQ55024/}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: '10m'
 
   grafana:
     #image: grafana/grafana
@@ -101,6 +117,24 @@ services:
       - "traefik.port=3000"
       - ${GRAFANA_URL_CONFIG:-traefik.frontend.rule=Host:grafana.docker.localhost}
 #     - ${GRAFANA_URL_CONFIG:-traefik.frontend.rule=Host:grafana.naturalis.nl}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: '10m'
+
+  rsyslog:
+    build: ./rsyslog
+    network_mode: "host"
+    ports:
+      - 514:514/udp
+      - 514:514
+    volumes:
+      - ./rsyslog/${RSYSLOG_CONF}:/etc/rsyslogd.conf
+      - rsyslog_data:/var/log
+    logging:
+      driver: "json-file"
+      options:
+        max-size: '10m'
 
   filebeat:
     image: docker.elastic.co/beats/filebeat-oss:6.3.2
@@ -113,16 +147,10 @@ services:
     command: -e -strict.perms=false
     networks:
       - default
-
-  rsyslog:
-    build: ./rsyslog
-    network_mode: "host"
-    ports:
-      - 514:514/udp
-      - 514:514
-    volumes:
-      - ./rsyslog/${RSYSLOG_CONF}:/etc/rsyslogd.conf
-      - rsyslog_data:/var/log
+    logging:
+      driver: "json-file"
+      options:
+        max-size: '10m'
 
 networks:
   web:
