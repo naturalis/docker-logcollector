@@ -1,0 +1,36 @@
+# Filterlog
+FILTERLOG           %{LOG_DATA},%{IP_SPECIFIC_DATA},%{IP_DATA},(%{PROTOCOL_DATA})?
+LOG_DATA            (%{INT:rule}),(%{INT:sub_rule})?,,(%{INT:tracker}),(%{WORD:iface}),(%{DATA:reason}),(%{WORD:action}),(%{WORD:direction}),(%{INT:ip_ver})
+IP_SPECIFIC_DATA    (%{IPv4_SPECIFIC_DATA}|%{IPv6_SPECIFIC_DATA})
+IPv4_SPECIFIC_DATA  (%{BASE16NUM:tos}),(%{DATA:somenumber})?,(%{INT:ttl}),(%{INT:id}),(%{INT:offset}),(%{WORD:flags}),(%{INT:proto_id}),(%{WORD:proto})
+IPv6_SPECIFIC_DATA  (%{DATA:class}),(%{DATA:flow_label}),(%{INT:hop_limit}),(%{WORD:proto}),(%{INT:proto_id})
+IP_DATA             (%{INT:length}),(%{IP:src_ip}),(%{IP:dest_ip})
+PROTOCOL_DATA       (%{TCP_DATA}|%{UDP_DATA}|%{PFSYNC_DATA}|%{ROUTING_DATA}|%{ICMP_DATA})
+TCP_DATA            (%{INT:src_port}),(%{INT:dest_port}),(%{INT:data_length}),(%{WORD:tcp_flags}),(%{INT:sequence_number}),(%{INT:some_number})?,(%{INT:tcp_window}),,(%{GREEDYDATA:tcp_options})?
+UDP_DATA            (%{INT:src_port}),(%{INT:dest_port}),(%{INT:data_length})
+PFSYNC_DATA         (%{WORD:carp_action}),(%{INT:carp_data_length}),(%{INT:carp_vhid_group}),(%{INT:carp_somenumber}),(%{INT:carp_advertising_frequency_skew}),(%{INT:carp_advertising_frequency_base})
+ROUTING_DATA        datalength=(%{INT:routing_datalength})
+ICMP_DATA           (%{ICMP_TYPE}%{ICMP_RESPONSE})
+ICMP_TYPE           (?<icmp_type>(request|reply|unreachproto|unreachport|unreach|timeexceed|paramprob|redirect|maskreply|needfrag|tstamp|tstampreply))
+ICMP_RESPONSE       (%{ICMP_ECHO_REQ_REPLY}|%{ICMP_UNREACHPORT}| %{ICMP_UNREACHPROTO}|%{ICMP_UNREACHABLE}|%{ICMP_NEED_FLAG}|%{ICMP_TSTAMP}|%{ICMP_TSTAMP_REPLY})
+ICMP_ECHO_REQ_REPLY (%{INT:icmp_echo_id}),(%{INT:icmp_echo_sequence})
+ICMP_UNREACHPORT    (%{IP:icmp_unreachport_dest_ip}),(%{WORD:icmp_unreachport_protocol}),(%{INT:icmp_unreachport_port})
+ICMP_UNREACHPROTO   (%{IP:icmp_unreach_dest_ip}),(%{WORD:icmp_unreachproto_protocol})
+ICMP_UNREACHABLE    (%{GREEDYDATA:icmp_unreachable})
+ICMP_NEED_FLAG      (%{IP:icmp_need_flag_ip}),(%{INT:icmp_need_flag_mtu})
+ICMP_TSTAMP         (%{INT:icmp_tstamp_id}),(%{INT:icmp_tstamp_sequence})
+ICMP_TSTAMP_REPLY   (%{INT:icmp_tstamp_reply_id}),(%{INT:icmp_tstamp_reply_sequence}),(%{INT:icmp_tstamp_reply_otime}),(%{INT:icmp_tstamp_reply_rtime}),(%{INT:icmp_tstamp_reply_ttime})
+
+# DHCP
+DHCPD               (%{DHCPDISCOVER}|%{DHCPOFFER}|%{DHCPREQUEST}|%{DHCPACK}|%{DHCPINFORM}|%{DHCPRELEASE}|%{DHCPDECLINE}|%{DHCPNAK}|%{DHCPMISC})
+DHCPDISCOVER        (?<dhcp_action>DHCPDISCOVER) from %{COMMONMAC:dhcp_client_mac}%{SPACE}((%{GREEDYDATA:dhcp_client_hostname}))? via (?<dhcp_client_vlan>[0-9a-z_]*)(: %{GREEDYDATA:dhcp_load_balance})?
+DHCPOFFER           (?<dhcp_action>DHCPOFFER) on %{IPV4:dhcp_client_ip} to %{COMMONMAC:dhcp_client_mac}%{SPACE}((%{GREEDYDATA:dhcp_client_hostname}))? via (?<dhcp_client_vlan>[0-9a-z_]*)
+DHCPREQUEST         (?<dhcp_action>DHCPREQUEST) for %{IPV4:dhcp_client_ip}%{SPACE}(\(%{IPV4:dhcp_server_ip}\))? from %{COMMONMAC:dhcp_client_mac}%{SPACE}((%{GREEDYDATA:dhcp_client_hostname}))? via (?<dhcp_client_vlan>[0-9a-z_]*)(: %{GREEDYDATA:dhcp_request_message})?
+DHCPACK             (%{DHCPACK_TO}|%{DHCPACK_ON})
+DHCPACK_TO          (?<dhcp_action>DHCPACK) to %{IPV4:dhcp_client_ip} \(%{COMMONMAC:dhcp_client_mac}\) via (?<dhcp_client_vlan>[0-9a-z_]*)
+DHCPACK_ON          (?<dhcp_action>DHCPACK) on %{IPV4:dhcp_client_ip} to %{COMMONMAC:dhcp_client_mac}%{SPACE}((%{GREEDYDATA:dhcp_client_hostname}))? via (?<dhcp_client_vlan>[0-9a-z_]*)
+DHCPINFORM          (?<dhcp_action>DHCPINFORM) from %{IPV4:dhcp_client_ip} via (?<dhcp_client_vlan>[0-9a-z_]*)
+DHCPRELEASE         (?<dhcp_action>DHCPRELEASE) of %{IPV4:dhcp_client_ip} from %{COMMONMAC:dhcp_client_mac}%{SPACE}((%{GREEDYDATA:dhcp_client_hostname}))? via (?<dhcp_client_vlan>[0-9a-z_]*) %{GREEDYDATA:dhcp_release_message}
+DHCPDECLINE         (?<dhcp_action>DHCPDECLINE) of %{IPV4:dhcp_client_ip} from %{COMMONMAC:dhcp_client_mac}%{SPACE}((%{GREEDYDATA:dhcp_client_hostname}))? via (?<dhcp_client_vlan>[0-9a-z_]*) %{GREEDYDATA:dhcp_decline_message}
+DHCPNAK             (?<dhcp_action>DHCPNAK) on %{IPV4:dhcp_client_ip} to %{COMMONMAC:dhcp_client_mac} via (?<dhcp_client_vlan>[0-9a-z_]*)
+DHCPMISC            (?<dhcp_action>(reuse_lease|bind update|uid lease|Wrote|balanced pool|balancing pool|failover))
