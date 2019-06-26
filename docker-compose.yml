@@ -1,12 +1,20 @@
-version: '3'
+version: '3.4'
+
+x-logging:
+  &default-logging
+  options:
+    max-size: '10m'
+    max-file: '5'
+  driver: json-file
 
 services:
   traefik:
-    image: traefik:1.6.5
-#   restart: always
+    image: traefik:1.7.12
+    restart: unless-stopped
     ports:
       - 80:80
       - 443:443
+      - 8081:8080
     networks:
       - web
     volumes:
@@ -17,16 +25,12 @@ services:
       - "traefik.enable=true"
       - "traefik.port=8080"
       - ${TRAEFIK_URL_CONFIG:-traefik.frontend.rule=Host:traefik.docker.localhost}
-#     - ${TRAEFIK_URL_CONFIG:-traefik.frontend.rule=Host:traefik.naturalis.nl}
-    logging:
-      driver: "json-file"
-      options:
-        max-size: '10m'
+    logging: *default-logging
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.3.2
     volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
+      - ${BASE_PATH:-/data}/elasticsearch:/usr/share/elasticsearch/data
     environment:
       # so support single node development
       discovery.type: single-node
@@ -37,8 +41,8 @@ services:
         hard: -1
 #    expose:
 #      - 9200
-     ports:
-       - "9200:9200"
+    ports:
+       - "9220:9200"
     networks:
       - web
       - default
@@ -48,12 +52,8 @@ services:
       - "traefik.enable=true"
       - "traefik.port=9200"
       - ${ELASTICSEARCH_URL_CONFIG:-traefik.frontend.rule=Host:elasticsearch.docker.localhost}
-#     - ${ELASTICSEARCH_URL_CONFIG:-traefik.frontend.rule=Host:elasticsearch.naturalis.nl}
       - ${ELASTICSEARCH_AUTH:-traefik.frontend.auth.basic=kibana:$apr1$.lcgllId$9sUY3fPk/gDuh3NQ55024/}
-    logging:
-      driver: "json-file"
-      options:
-        max-size: '10m'
+    logging: *default-logging
 
   logstash:
     build: ./logstash
@@ -69,17 +69,14 @@ services:
       - default
     depends_on:
       - elasticsearch
-    logging:
-      driver: "json-file"
-      options:
-        max-size: '10m'
+    logging: *default-logging
 
   kibana:
     image: docker.elastic.co/kibana/kibana-oss:6.3.2
     expose:
       - "5601"
-    ports: # remove when using traefik only
-      - "5601:5601"
+    ports: # use 5661 to bypass traefik
+      - "5661:5601"
     networks:
       - web
       - default
@@ -89,24 +86,19 @@ services:
       - "traefik.enable=true"
       - "traefik.port=5601"
       - ${KIBANA_URL_CONFIG:-traefik.frontend.rule=Host:kibana.docker.localhost}
-#     - ${KIBANA_URL_CONFIG:-traefik.frontend.rule=Host:kibana.naturalis.nl}
       - ${KIBANA_AUTH:-traefik.frontend.auth.basic=kibana:$apr1$.lcgllId$9sUY3fPk/gDuh3NQ55024/}
-    logging:
-      driver: "json-file"
-      options:
-        max-size: '10m'
+    logging: *default-logging
 
   grafana:
-    #image: grafana/grafana
     image: grafana/grafana:master
     volumes:
-      - grafana_data:/var/lib/grafana
+      - ${BASE_PATH:-/data}/grafana:/var/lib/grafana
     environment:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASS:-secret}
     expose:
       - "3000"
-    ports: # remove when using traefik only
-      - "3000:3000"
+    ports: # use 3030 to bypass traefik
+      - "3030:3000"
     networks:
       - web
       - default
@@ -116,11 +108,7 @@ services:
       - "traefik.enable=true"
       - "traefik.port=3000"
       - ${GRAFANA_URL_CONFIG:-traefik.frontend.rule=Host:grafana.docker.localhost}
-#     - ${GRAFANA_URL_CONFIG:-traefik.frontend.rule=Host:grafana.naturalis.nl}
-    logging:
-      driver: "json-file"
-      options:
-        max-size: '10m'
+    logging: *default-logging
 
   rsyslog:
     build: ./rsyslog
@@ -130,11 +118,8 @@ services:
       - 514:514
     volumes:
       - ./rsyslog/${RSYSLOG_CONF}:/etc/rsyslogd.conf
-      - rsyslog_data:/var/log
-    logging:
-      driver: "json-file"
-      options:
-        max-size: '10m'
+      - ${BASE_PATH:-/data}/rsyslog::/var/log
+    logging: *default-logging
 
   filebeat:
     image: docker.elastic.co/beats/filebeat-oss:6.3.2
@@ -143,20 +128,12 @@ services:
       - ./filebeat/modules.d:/usr/share/filebeat/modules.d
       - ./filebeat/module:/usr/share/filebeat/module
       - ./filebeat/template:/template
-      - /tmp/syslog:/log
+      - ${BASE_PATH:-/data}/filebeat:/log
     command: -e -strict.perms=false
     networks:
       - default
-    logging:
-      driver: "json-file"
-      options:
-        max-size: '10m'
+    logging: *default-logging
 
 networks:
   web:
     external: true
-
-volumes:
-  elasticsearch_data:
-  grafana_data:
-  rsyslog_data:
