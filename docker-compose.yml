@@ -137,3 +137,8 @@ services:
 networks:
   web:
     external: true
+
+volumes:
+  elasticsearch_data:
+  grafana_data:
+  rsyslog_data:
