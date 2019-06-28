@@ -2,7 +2,7 @@ actions:
   1:
     action: delete_indices
     description: >-
-       Delete logstash indices older than ${CURATOR_UNIT_COUNT:1} ${CURATOR_UNIT:months} (based on index name), for logstash-
+       Delete logstash indices older than ${CURATOR_UNIT_COUNT} ${CURATOR_UNIT} (based on index name), for logstash-
        prefixed indices. Ignore the error if the filter does not result in an
        actionable list of indices (ignore_empty_list) and exit cleanly.
     options:
