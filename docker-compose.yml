@@ -57,6 +57,10 @@ services:
 
   curator:
     image: bobrik/curator:5.7.6
+    environment:
+      UNIT_COUNT: ${CURATOR_UNIT_COUNT}
+      UNIT: ${CURATOR_UNIT}
+      ES_HOST: ${CURATOR_ES_HOST}
     volumes:
       - ./curator/action-file.yml:/action-file.yml
       - ./curator/config.yml:/config.yml
