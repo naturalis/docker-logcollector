@@ -118,7 +118,7 @@ services:
       - 514:514
     volumes:
       - ./rsyslog/${RSYSLOG_CONF}:/etc/rsyslogd.conf
-      - ${BASE_PATH:-/data}/rsyslog::/var/log
+      - ${BASE_PATH:-/data}/rsyslog:/var/log
     logging: *default-logging
 
   filebeat:
