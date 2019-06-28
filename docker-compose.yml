@@ -21,6 +21,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${TRAEFIK_TOML_FILE:-./traefik/traefik.toml}:/traefik.toml
       - ${ACME_JSON:-./traefik/acme.json}:/acme.json
+      - ${CERTDIR:-/etc/letsencrypt}:/etc/letsencrypt
     logging: *default-logging
 
   elasticsearch:
