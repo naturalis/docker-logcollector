@@ -56,7 +56,7 @@ services:
     logging: *default-logging
 
   curator:
-    image: bobrik/curator:5.6.0
+    image: bobrik/curator:5.7.6
     environment:
       UNIT_COUNT: 90
       UNIT: days
