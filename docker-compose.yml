@@ -57,10 +57,6 @@ services:
 
   curator:
     image: bobrik/curator:5.7.6
-    environment:
-      UNIT_COUNT: 90
-      UNIT: days
-      ES_HOST: elasticsearch
     volumes:
       - ./curator/action-file.yml:/action-file.yml
       - ./curator/config.yml:/config.yml
