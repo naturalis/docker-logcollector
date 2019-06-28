@@ -19,5 +19,5 @@ filebeat - logstash - elasticsearch - kibana - grafana - traefik
     docker-compose run --rm curator --config config.yml action-file.yml
     
 ### Curator cron job
-    # Run every midnight
-    0 0 * * * cd /opt/docker-flekgt && /usr/local/bin/docker-compose run --rm curator --config config.yml action-file.yml >> /var/log/cron.log
+    # Run every 10 minutes
+    */10 * * * cd /opt/docker-flekgt && /usr/local/bin/docker-compose run --rm curator --config config.yml action-file.yml > /dev/null
