@@ -97,8 +97,8 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASS:-secret}
     expose:
       - "3000"
-    ports: # use 3030 to bypass traefik
-      - "3030:3000"
+    ports: # use 3333 to bypass traefik
+      - "3333:3000"
     networks:
       - web
       - default
@@ -112,7 +112,7 @@ services:
 
   rsyslog:
     build: ./rsyslog
-    network_mode: "host"
+#    network_mode: "host"
     ports:
       - 514:514/udp
       - 514:514
