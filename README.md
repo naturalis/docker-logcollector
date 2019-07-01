@@ -5,8 +5,8 @@ filebeat - logstash - elasticsearch - kibana - grafana - traefik
 ## Needed for Elasticsearch
     echo 'vm.max_map_count=262144' >> /etc/sysctl.conf
 
-## pfSense/OPNsense
-    cp pfsense.env .env
+## OPNsense
+    cp opnsense.env .env
 
 ## Cumulus
     cp cumulus.env .env
