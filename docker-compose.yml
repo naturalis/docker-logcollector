@@ -104,7 +104,7 @@ services:
   grafana:
     image: grafana/grafana:master
     volumes:
-      - ${BASE_PATH:-/data}/grafana:/var/lib/grafana
+      - grafana_data:/var/lib/grafana
     environment:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASS:-secret}
     expose:
