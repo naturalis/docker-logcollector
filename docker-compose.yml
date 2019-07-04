@@ -87,7 +87,7 @@ services:
     logging: *default-logging
 
   grafana:
-    image: grafana/grafana:master
+    image: grafana/grafana:6.2.5
     volumes:
       - ${BASE_PATH:-/data}/grafana:/var/lib/grafana
     environment:
