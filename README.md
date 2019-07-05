@@ -1,7 +1,5 @@
 # docker-logcollector
 
-filebeat - logstash - elasticsearch - kibana - grafana - traefik
-
 ## Needed for Elasticsearch
     echo 'vm.max_map_count=262144' >> /etc/sysctl.conf
 
