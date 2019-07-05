@@ -40,8 +40,6 @@ services:
       memlock:
         soft: -1
         hard: -1
-#    expose:
-#      - 9200
     ports:
       - "9200:9200"
     networks:
@@ -103,7 +101,7 @@ services:
     logging: *default-logging
 
   grafana:
-    image: grafana/grafana:master
+    image: grafana/grafana:6.2.5
     volumes:
       - grafana_data:/var/lib/grafana
     environment:
@@ -125,7 +123,7 @@ services:
 
   rsyslog:
     build: ./rsyslog
-    network_mode: "host"
+#    network_mode: "host"
     ports:
       - 514:514/udp
       - 514:514
