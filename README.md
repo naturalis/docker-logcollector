@@ -1,4 +1,4 @@
-# docker-flekgt
+# docker-logcollector
 
 filebeat - logstash - elasticsearch - kibana - grafana - traefik
 
