@@ -21,13 +21,17 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${TRAEFIK_TOML_FILE:-./traefik/traefik.toml}:/traefik.toml
       - ${ACME_JSON:-./traefik/acme.json}:/acme.json
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=8080"
+      - ${TRAEFIK_URL_CONFIG:-traefik.frontend.rule=Host:traefik.docker.localhost}
       - ${CERTDIR:-/etc/letsencrypt}:/etc/letsencrypt
     logging: *default-logging
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.3.2
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.2.0
     volumes:
-      - ${BASE_PATH:-/data}/elasticsearch:/usr/share/elasticsearch/data
+      - elasticsearch_data:/usr/share/elasticsearch/data
     environment:
       # so support single node development
       discovery.type: single-node
@@ -36,10 +40,8 @@ services:
       memlock:
         soft: -1
         hard: -1
-#    expose:
-#      - 9200
     ports:
-       - "9220:9200"
+      - "9200:9200"
     networks:
       - web
       - default
@@ -51,6 +53,18 @@ services:
       - ${ELASTICSEARCH_URL_CONFIG:-traefik.frontend.rule=Host:elasticsearch.docker.localhost}
       - ${ELASTICSEARCH_AUTH:-traefik.frontend.auth.basic=kibana:$apr1$.lcgllId$9sUY3fPk/gDuh3NQ55024/}
     logging: *default-logging
+
+  curator:
+    image: bobrik/curator:5.7.6
+    environment:
+      UNIT_COUNT: ${CURATOR_UNIT_COUNT}
+      UNIT: ${CURATOR_UNIT}
+      ES_HOST: ${CURATOR_ES_HOST}
+    volumes:
+      - ./curator/action-file.yml:/action-file.yml
+      - ./curator/config.yml:/config.yml
+    depends_on:
+      - elasticsearch
 
   logstash:
     build: ./logstash
@@ -69,11 +83,11 @@ services:
     logging: *default-logging
 
   kibana:
-    image: docker.elastic.co/kibana/kibana-oss:6.3.2
+    image: docker.elastic.co/kibana/kibana-oss:7.2.0
     expose:
       - "5601"
-    ports: # use 5661 to bypass traefik
-      - "5661:5601"
+    ports:
+      - "5601:5601"
     networks:
       - web
       - default
@@ -89,13 +103,13 @@ services:
   grafana:
     image: grafana/grafana:6.2.5
     volumes:
-      - ${BASE_PATH:-/data}/grafana:/var/lib/grafana
+      - grafana_data:/var/lib/grafana
     environment:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASS:-secret}
     expose:
       - "3000"
-    ports: # use 3333 to bypass traefik
-      - "3333:3000"
+    ports:
+      - "3000:3000"
     networks:
       - web
       - default
@@ -115,11 +129,11 @@ services:
       - 514:514
     volumes:
       - ./rsyslog/${RSYSLOG_CONF}:/etc/rsyslogd.conf
-      - ${BASE_PATH:-/data}/rsyslog:/var/log
+      - rsyslog_data:/var/log
     logging: *default-logging
 
   filebeat:
-    image: docker.elastic.co/beats/filebeat-oss:6.3.2
+    image: docker.elastic.co/beats/filebeat-oss:7.2.0
     volumes:
       - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
       - ./filebeat/modules.d:/usr/share/filebeat/modules.d
@@ -134,3 +148,8 @@ services:
 networks:
   web:
     external: true
+
+volumes:
+  elasticsearch_data:
+  grafana_data:
+  rsyslog_data:
