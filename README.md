@@ -20,7 +20,7 @@ filebeat - logstash - elasticsearch - kibana - grafana - traefik
     
 ### Curator cron job
     # Run every 10 minutes
-    */10 * * * cd /opt/docker-flekgt && /usr/local/bin/docker-compose run --rm curator --config config.yml action-file.yml > /dev/null
+    */10 * * * * cd /opt/docker-flekgt && /usr/local/bin/docker-compose run --rm curator --config config.yml action-file.yml > /dev/null
 
 ### Rsyslog cron job
     # Delete syslog file every midnight
