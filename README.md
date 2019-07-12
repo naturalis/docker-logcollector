@@ -18,8 +18,8 @@
     
 ### Curator cron job
     # Run every 10 minutes
-    */10 * * * * cd /opt/docker-flekgt && /usr/local/bin/docker-compose run --rm curator --config config.yml action-file.yml > /dev/null
+    */10 * * * * cd /opt/docker-logcollector && /usr/local/bin/docker-compose run --rm curator --config config.yml action-file.yml > /dev/null
 
 ### Rsyslog cron job
     # Delete syslog file every midnight
-    0 0 * * * cd /opt/docker-flekgt && /usr/local/bin/docker-compose exec rsyslog rm /var/log/syslog && /usr/local/bin/docker-compose restart rsyslog >> /var/log/cron.log
+    0 0 * * * cd /opt/docker-logcollector && /usr/local/bin/docker-compose exec rsyslog rm /var/log/syslog && /usr/local/bin/docker-compose restart rsyslog >> /var/log/cron.log
