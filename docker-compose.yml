@@ -132,6 +132,19 @@ services:
       - rsyslog_data:/var/log
     logging: *default-logging
 
+  logrotate:
+    image: blacklabelops/logrotate:latest
+    volumes:
+      - rsyslog_data:/var/log/rsyslog
+    environment:
+      - LOGS_DIRECTORIES=/var/log/rsyslog/
+      - LOGROTATE_INTERVAL=hourly
+      - LOGROTATE_COPIES=2
+      - LOGROTATE_SIZE=1G
+      - LOGROTATE_CRONSCHEDULE=*/10 * * * *
+      - LOGROTATE_PARAMETERS=v
+      - LOGROTATE_LOGFILE=/var/log/logrotatecron.log
+
   filebeat:
     image: docker.elastic.co/beats/filebeat-oss:7.2.0
     volumes:
