@@ -13,7 +13,7 @@
     docker-compose exec elasticsearch sh
     curl -XDELETE elasticsearch:9200/logstash-*
 
-## Curator
+## Run Curator manually
     docker-compose run --rm curator --config config.yml action-file.yml
     
 ### Curator cron job
