@@ -144,6 +144,7 @@ services:
       - LOGROTATE_CRONSCHEDULE=*/10 * * * *
       - LOGROTATE_PARAMETERS=v
       - LOGROTATE_LOGFILE=/var/log/logrotatecron.log
+    logging: *default-logging
 
   filebeat:
     image: docker.elastic.co/beats/filebeat-oss:7.2.0
