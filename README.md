@@ -16,6 +16,6 @@
 ## Run Curator manually
     docker-compose run --rm curator --config config.yml action-file.yml
     
-### Curator cron job
+## Curator cron job
     # Run every 10 minutes
     */10 * * * * cd /opt/docker-logcollector && /usr/local/bin/docker-compose run --rm curator --config config.yml action-file.yml > /dev/null
