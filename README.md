@@ -1,5 +1,7 @@
 # docker-logcollector
 
+Receive rsyslogs, store in Elasticsearch, show in Kibana or Grafana.
+
 ## Needed for Elasticsearch
     echo 'vm.max_map_count=262144' >> /etc/sysctl.conf
 
