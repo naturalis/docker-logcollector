@@ -29,7 +29,7 @@ services:
     logging: *default-logging
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.2.0
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:${ELK_VERSION}
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
     environment:
@@ -67,7 +67,10 @@ services:
       - elasticsearch
 
   logstash:
-    build: ./logstash
+    build: 
+      context: ./logstash
+      args:
+        ELK_VERSION: ${ELK_VERSION}
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./logstash/${LOGSTASH_PATH_CONFIG}:/usr/share/logstash/pipeline
@@ -83,7 +86,7 @@ services:
     logging: *default-logging
 
   kibana:
-    image: docker.elastic.co/kibana/kibana-oss:7.2.0
+    image: docker.elastic.co/kibana/kibana-oss:${ELK_VERSION}
     expose:
       - "5601"
     ports:
@@ -147,7 +150,7 @@ services:
     logging: *default-logging
 
   filebeat:
-    image: docker.elastic.co/beats/filebeat-oss:7.2.0
+    image: docker.elastic.co/beats/filebeat-oss:${ELK_VERSION}
     volumes:
       - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
       - ./filebeat/modules.d:/usr/share/filebeat/modules.d
