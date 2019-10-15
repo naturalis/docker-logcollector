@@ -28,6 +28,17 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik:/etc/traefik
 
+  traefik-forward-auth:
+    image: thomseddon/traefik-forward-auth:2.0.0
+    env_file: ./.env
+    ports:
+            - 127.0.0.1:4181:4181
+    logging: *default-logging
+    command:
+      - '--url-path=/oauth2/callback'
+    networks:
+      - web
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:${ELK_VERSION}
     volumes:
@@ -51,7 +62,7 @@ services:
       - traefik.http.routers.elasticsearch.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-route53}
       - traefik.http.routers.elasticsearch.tls=true
       - traefik.http.routers.elasticsearch.rule=${ELASTICSEARCH_URL_CONFIG:-Host(`something-es.analytics.naturalis.nl`)}
-#      - ${ELASTICSEARCH_AUTH:-traefik.frontend.auth.basic=kibana:$apr1$.lcgllId$9sUY3fPk/gDuh3NQ55024/}
+      - traefik.http.routers.elasticsearch.middlewares=secureHeaders@file,googleAuth@file
     logging: *default-logging
 
   curator:
@@ -97,7 +108,7 @@ services:
       - traefik.http.routers.kibana.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-route53}
       - traefik.http.routers.kibana.tls=true
       - traefik.http.routers.kibana.rule=${KIBANA_URL_CONFIG:-Host(`something-kibana.analytics.naturalis.nl`)}
-#      - ${KIBANA_AUTH:-traefik.frontend.auth.basic=kibana:$apr1$.lcgllId$9sUY3fPk/gDuh3NQ55024/}
+      - traefik.http.routers.kibana.middlewares=secureHeaders@file,googleAuth@file
     logging: *default-logging
 
   grafana:

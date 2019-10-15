@@ -1,0 +1,30 @@
+[http.routers]
+  [http.routers.router0]
+  entrypoints = ["http"]
+  rule = "HostRegexp(`{any:.*}`)"
+  middlewares = ["https-redirect"]
+  service = "dummy"
+
+[http.middlewares]
+  [http.middlewares.https-redirect.redirectScheme]
+    scheme = "https"
+  [http.middlewares.googleAuth.forwardAuth]
+    address = "http://oauth:4181"
+    trustForwardHeader = true
+    authResponseHeaders = ["X-Forwarded-User"]
+  [http.middlewares.secureHeaders.headers]
+    FrameDeny = true
+    SSLRedirect = true
+    stsSeconds = 315360000
+    stsPreload = true
+    stsIncludeSubdomains = true
+    contentTypeNosniff = true
+    browserXssFilter = true
+    X-Custom-Request-Header = "X-Robots-Tag=noindex,nofollow,nosnippet,noarchive,notranslate,noimageindex"
+
+
+
+[http.services]
+  [http.services.dummy.LoadBalancer]
+     [[http.services.dummy.LoadBalancer.servers]]
+        url = "http://192.168.0.1"

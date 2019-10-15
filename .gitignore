@@ -1,2 +1,4 @@
 .env
-traefik.toml
+traefik/traefik.toml
+traefik/acme.json
+
