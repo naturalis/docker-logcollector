@@ -29,7 +29,7 @@ services:
       - ./traefik:/etc/traefik
 
   traefik-forward-auth:
-    image: thomseddon/traefik-forward-auth:2.0.0
+    image: thomseddon/traefik-forward-auth:2.0.1
     restart: unless-stopped
     env_file: ./.env
     ports:
