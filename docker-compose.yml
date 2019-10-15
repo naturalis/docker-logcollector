@@ -8,25 +8,25 @@ x-logging:
   driver: json-file
 
 services:
-  traefik:
-    image: traefik:1.7.12
+ traefik:
+    image: traefik:2.0.1
+    container_name: traefik
     restart: unless-stopped
+    environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_HOSTED_ZONE_ID=${AWS_HOSTED_ZONE_ID}
     ports:
       - 80:80
       - 443:443
       - 8081:8080
     networks:
+      - default
       - web
+    logging: *default-logging
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ${TRAEFIK_TOML_FILE:-./traefik/traefik.toml}:/traefik.toml
-      - ${ACME_JSON:-./traefik/acme.json}:/acme.json
-    labels:
-      - "traefik.enable=true"
-      - "traefik.port=8080"
-      - ${TRAEFIK_URL_CONFIG:-traefik.frontend.rule=Host:traefik.docker.localhost}
-      - ${CERTDIR:-/etc/letsencrypt}:/etc/letsencrypt
-    logging: *default-logging
+      - ./traefik:/etc/traefik
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:${ELK_VERSION}
@@ -46,12 +46,12 @@ services:
       - web
       - default
     labels:
-      - "traefik.backend=naturalis-elasticsearch"
-      - "traefik.docker.network=web"
-      - "traefik.enable=true"
-      - "traefik.port=9200"
-      - ${ELASTICSEARCH_URL_CONFIG:-traefik.frontend.rule=Host:elasticsearch.docker.localhost}
-      - ${ELASTICSEARCH_AUTH:-traefik.frontend.auth.basic=kibana:$apr1$.lcgllId$9sUY3fPk/gDuh3NQ55024/}
+      - traefik.enable=${TRAEFIK_ENABLE:-true}
+      - traefik.http.routers.elasticsearch.entrypoints=https
+      - traefik.http.routers.elasticsearch.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-route53}
+      - traefik.http.routers.elasticsearch.tls=true
+      - traefik.http.routers.elasticsearch.rule=${ELASTICSEARCH_URL_CONFIG:-Host(`something-es.analytics.naturalis.nl`)}
+#      - ${ELASTICSEARCH_AUTH:-traefik.frontend.auth.basic=kibana:$apr1$.lcgllId$9sUY3fPk/gDuh3NQ55024/}
     logging: *default-logging
 
   curator:
@@ -92,12 +92,12 @@ services:
       - web
       - default
     labels:
-      - "traefik.backend=naturalis-kibana"
-      - "traefik.docker.network=web"
-      - "traefik.enable=true"
-      - "traefik.port=5601"
-      - ${KIBANA_URL_CONFIG:-traefik.frontend.rule=Host:kibana.docker.localhost}
-      - ${KIBANA_AUTH:-traefik.frontend.auth.basic=kibana:$apr1$.lcgllId$9sUY3fPk/gDuh3NQ55024/}
+      - traefik.enable=${TRAEFIK_ENABLE:-true}
+      - traefik.http.routers.kibana.entrypoints=https
+      - traefik.http.routers.kibana.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-route53}
+      - traefik.http.routers.kibana.tls=true
+      - traefik.http.routers.kibana.rule=${KIBANA_URL_CONFIG:-Host(`something-kibana.analytics.naturalis.nl`)}
+#      - ${KIBANA_AUTH:-traefik.frontend.auth.basic=kibana:$apr1$.lcgllId$9sUY3fPk/gDuh3NQ55024/}
     logging: *default-logging
 
   grafana:
@@ -114,11 +114,11 @@ services:
       - web
       - default
     labels:
-      - "traefik.backend=naturalis-grafana"
-      - "traefik.docker.network=web"
-      - "traefik.enable=true"
-      - "traefik.port=3000"
-      - ${GRAFANA_URL_CONFIG:-traefik.frontend.rule=Host:grafana.docker.localhost}
+      - traefik.enable=${TRAEFIK_ENABLE:-true}
+      - traefik.http.routers.grafana.entrypoints=https
+      - traefik.http.routers.grafana.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-route53}
+      - traefik.http.routers.grafana.tls=true
+      - traefik.http.routers.grafana.rule=${GRAFANA_URL_CONFIG:-Host(`something-grafana.analytics.naturalis.nl`)}
     logging: *default-logging
 
   rsyslog:
