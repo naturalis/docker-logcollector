@@ -9,7 +9,7 @@
   [http.middlewares.https-redirect.redirectScheme]
     scheme = "https"
   [http.middlewares.googleAuth.forwardAuth]
-    address = "http://oauth:4181"
+    address = "http://traefik-forward-auth:4181"
     trustForwardHeader = true
     authResponseHeaders = ["X-Forwarded-User"]
   [http.middlewares.secureHeaders.headers]
