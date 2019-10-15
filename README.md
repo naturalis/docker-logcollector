@@ -21,3 +21,17 @@ Receive rsyslogs, store in Elasticsearch, show in Kibana or Grafana.
 ## Curator cron job
     # Run every 10 minutes
     */10 * * * * cd /opt/docker-logcollector && /usr/local/bin/docker-compose run --rm curator --config config.yml action-file.yml > /dev/null
+
+## Custom containers on dockerhub
+
+naturalis/rsyslog:0.0.1 , Dockerfile in rsyslog dir: 
+build using
+```
+sudo docker build -t naturalis/rsyslog:0.0.1
+```
+
+naturalis/logstash:7.3.2 , Dockerfile in logstash
+Tag follows ELK_VERSION, build using --build-arg like below
+```
+sudo docker build -t naturalis/logstash:7.3.2 . --build-arg ELK_VERSION=7.3.2
+```

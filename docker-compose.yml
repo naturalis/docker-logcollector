@@ -67,10 +67,7 @@ services:
       - elasticsearch
 
   logstash:
-    build: 
-      context: ./logstash
-      args:
-        ELK_VERSION: ${ELK_VERSION}
+    image: naturalis/logstash:${ELK_VERSION}
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./logstash/${LOGSTASH_PATH_CONFIG}:/usr/share/logstash/pipeline
@@ -86,7 +83,7 @@ services:
     logging: *default-logging
 
   kibana:
-    image: docker.elastic.co/kibana/kibana-oss:${ELK_VERSION}
+    image: docker.elastic.co/kibana/kibana-oss:${ELK_VERSION:-7.3.2}
     expose:
       - "5601"
     ports:
@@ -125,7 +122,7 @@ services:
     logging: *default-logging
 
   rsyslog:
-    build: ./rsyslog
+    image: naturalis/rsyslog:0.0.1
     network_mode: "host"
     ports:
       - 514:514/udp
