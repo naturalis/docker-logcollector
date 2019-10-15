@@ -8,7 +8,7 @@ x-logging:
   driver: json-file
 
 services:
- traefik:
+  traefik:
     image: traefik:2.0.1
     container_name: traefik
     restart: unless-stopped
@@ -30,6 +30,7 @@ services:
 
   traefik-forward-auth:
     image: thomseddon/traefik-forward-auth:2.0.0
+    restart: unless-stopped
     env_file: ./.env
     ports:
             - 127.0.0.1:4181:4181
