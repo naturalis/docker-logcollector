@@ -147,7 +147,7 @@ services:
   logrotate:
     image: blacklabelops/logrotate:1.3
     volumes:
-      - rsyslog_data:/var/log/rsyslog
+      - rsyslog_data:/var/log
     environment:
       - LOGS_DIRECTORIES=/var/log/rsyslog
       - LOGROTATE_INTERVAL=hourly
