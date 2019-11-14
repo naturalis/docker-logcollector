@@ -95,7 +95,7 @@ services:
     logging: *default-logging
 
   kibana:
-    image: docker.elastic.co/kibana/kibana-oss:${ELK_VERSION:-7.3.2}
+    image: docker.elastic.co/kibana/kibana-oss:${ELK_VERSION}
     expose:
       - "5601"
     ports:
