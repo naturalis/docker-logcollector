@@ -152,7 +152,7 @@ services:
       - LOGS_DIRECTORIES=/var/log
       - LOGROTATE_INTERVAL=hourly
       - LOGROTATE_COPIES=2
-      - LOGROTATE_SIZE=1G
+      - LOGROTATE_SIZE=5G
       - LOGROTATE_CRONSCHEDULE=*/10 * * * *
       - LOGROTATE_PARAMETERS=v
       - LOGROTATE_LOGFILE=/var/log/logrotatecron.log
