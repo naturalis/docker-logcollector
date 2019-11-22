@@ -1,4 +1,4 @@
 PROCURVE (%{HP5xxx}|%{HP29xx}|%{HP18xx})
-HP5xxx %{SYSLOGTIMESTAMP:syslog_timestamp}: %{WORD:syslog_severity} %{NUMBER} %{SYSLOGHOST:syslog_hostname} (?<vendor_id>\%%10)(?<syslog_program>[A-Z]*\/\d\/[A-Z_]*)((?<digest>\([a-z]\)))?:%{SPACE}%{GREEDYDATA:syslog_message}
+HP5xxx %{SYSLOGTIMESTAMP:syslog_timestamp}: %{WORD:syslog_severity} %{SYSLOGHOST:syslog_ip} %{SYSLOGHOST:syslog_hostname} (?<vendor_id>\%%10)(?<syslog_program>[A-Z]*\/\d\/[A-Z_]*)((?<digest>\([a-z]\)))?:%{SPACE}%{GREEDYDATA:syslog_message}
 HP29xx %{SYSLOGTIMESTAMP:syslog_timestamp}: %{WORD:syslog_severity} %{SYSLOGHOST:syslog_hostname} %{INT:syslog_pid} %{DATA:syslog_program}:%{SPACE} %{GREEDYDATA:syslog_message}
 HP18xx %{SYSLOGTIMESTAMP:syslog_timestamp}: %{WORD:syslog_severity} %{GREEDYDATA:syslog_hostname}-1 %{DATA:syslog_program}:%{SPACE} %{GREEDYDATA} %{INT:syslog_pid} %% %{GREEDYDATA:syslog_message}
