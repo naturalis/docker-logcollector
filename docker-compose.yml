@@ -152,7 +152,7 @@ services:
     environment:
       - LOGS_DIRECTORIES=/var/log
       - LOGROTATE_INTERVAL=hourly
-      - LOGROTATE_COPIES=2
+      - LOGROTATE_COPIES=1
       - LOGROTATE_SIZE=5G
       - LOGROTATE_CRONSCHEDULE=*/10 * * * *
       - LOGROTATE_PARAMETERS=v
