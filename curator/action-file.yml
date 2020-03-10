@@ -1,24 +1,11 @@
 actions:
   1:
-    action: delete_indices
+    action: rollover
     description: >-
-       Delete logstash indices older than ${UNIT_COUNT} ${UNIT} (based on index name), for logstash-
-       prefixed indices. Ignore the error if the filter does not result in an
-       actionable list of indices (ignore_empty_list) and exit cleanly.
+      Rollover the index associated with alias 'aliasname', which should be in the
+      form of prefix-000001 (or similar), or prefix-YYYY.MM.DD-1.
     options:
-      ignore_empty_list: True
-      timeout_override:
-      continue_if_exception: True
-      disable_action: False
-    filters:
-    - filtertype: pattern
-      kind: prefix
-      value: logstash-
-      exclude:
-    - filtertype: age
-      source: name
-      direction: older
-      timestring: '%Y.%m.%d'
-      unit: ${UNIT:weeks}
-      unit_count: ${UNIT_COUNT:1}
-      exclude:
+      name: logstash
+      conditions:
+        max_age: 1d
+        max_size: 30gb
