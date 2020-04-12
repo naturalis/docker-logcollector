@@ -19,6 +19,6 @@ actions:
       source: name
       direction: older
       timestring: '%Y.%m.%d'
-      unit: ${CURATOR_UNIT:weeks}
-      unit_count: ${CURATOR_UNIT_COUNT:1}
+      unit: ${CURATOR_UNIT}
+      unit_count: ${CURATOR_UNIT_COUNT}
       exclude:
