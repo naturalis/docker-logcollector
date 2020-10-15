@@ -1,3 +1,5 @@
+# MOVED TO GITLAB
+
 # docker-logcollector
 
 Receive rsyslogs, store in Elasticsearch, show in Kibana or Grafana.
